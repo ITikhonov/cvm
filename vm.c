@@ -63,8 +63,9 @@ void step(uint16_t *c) {
 		case 0x1e: c[B]=pop(c); break;
 		case 0x1f: c[A]=pop(c); break;
 
-		case 0x98: exit(0); break;
-		case 0x99: printf("0x%02x\n",tos(c)); break;
+		case 0x97: printf("0x%02x ",tos(c)); break;
+		case 0x98: printf("%c\n",tos(c)); break;
+		case 0x99: exit(0); break;
 
 		default:
 			printf("unknown op 0x%02x at 0x%x\n",op,c[IP]);
