@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int debug=0;
+
 static uint32_t *p32(uint8_t *c,uint32_t i) { return (uint32_t*)&c[i]; };
 
 uint8_t *step(uint8_t *c) {
@@ -33,7 +35,7 @@ uint8_t *step(uint8_t *c) {
 
 		////////////////////////////////////////////////////
 
-		//dump();
+		if(debug) dump();
 
 		uint8_t op=readop();
 		switch(op) {
@@ -92,6 +94,8 @@ int main(int argc,char *argv[]) {
 	FILE *f=fopen(argv[1],"r");
 	fread(code,1,65536,f);
 	fclose(f);
+
+	debug=argc>2;
 
 	for(;;) {
 		code=step(code);
