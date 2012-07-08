@@ -22,7 +22,7 @@ void dump(uint16_t *c) {
 	printf("0x%04x: op 0x%02x sp 0x%02x\n",c[IP],c[c[IP]],c[SP]);
 }
 
-void step(uint16_t *c) {
+uint16_t *step(uint16_t *c) {
 		// dump(c);
 		uint8_t op=readop(c);
 		switch(op) {
@@ -63,6 +63,7 @@ void step(uint16_t *c) {
 		case 0x1e: c[B]=pop(c); break;
 		case 0x1f: c[A]=pop(c); break;
 
+		case 0x96: c=realloc(c,pop(c)<<16); break;
 		case 0x97: printf("0x%02x ",tos(c)); break;
 		case 0x98: printf("%c\n",tos(c)); break;
 		case 0x99: exit(0); break;
@@ -71,17 +72,18 @@ void step(uint16_t *c) {
 			printf("unknown op 0x%02x at 0x%x\n",op,c[IP]);
 			abort();
 		}
+	return c;
 }
 
 int main(int argc,char *argv[]) {
-	uint16_t code[1024];
+	uint16_t *code=malloc(65536);
 
 	FILE *f=fopen(argv[1],"r");
-	fread(code,1,sizeof(code),f);
+	fread(code,1,65536,f);
 	fclose(f);
 
 	for(;;) {
-		step(code);
+		code=step(code);
 	}
 	return 0;
 }

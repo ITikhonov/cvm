@@ -7,6 +7,7 @@ Opcodes from http://www.colorforth.com/inst.htm except no
 -opcodes['exit']=0x99
 -opcodes['char']=0x98
 -opcodes['print']=0x97
+-opcodes['memsize']=0x96
 
 Each non-empty line of input contains one definition. First word is a name
 of what will be defined, the rest is a definition.
