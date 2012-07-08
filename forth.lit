@@ -60,7 +60,7 @@ we store offset.
 -		o[w]=len(c)
 -		for x in d:
 -			if x.startswith(':'): l[x[1:]]=len(c)
--			elif x in l: c.append(l[x])
+-			elif x in l: c.extend(makeint(l[x]))
 -			else: c.extend(op(x))
 -		c.append(0x00)
 -	o['data']=len(c)
