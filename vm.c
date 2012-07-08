@@ -18,14 +18,19 @@ static void rpush(uint16_t *code,uint16_t v) { code[RP]++; code[code[RP]]=v; }
 
 static uint16_t readop(uint16_t *code) { return code[code[IP]++]; }
 
+void dump(uint16_t *c) {
+	printf("0x%04x: op 0x%02x sp 0x%02x\n",c[IP],c[c[IP]],c[SP]);
+}
+
 void step(uint16_t *c) {
+		// dump(c);
 		uint8_t op=readop(c);
 		switch(op) {
 		// Reference; http://www.colorforth.com/inst.htm
 		case 0x00: c[IP]=rpop(c); break;
 		case 0x01: { uint16_t r=rpop(c); rpush(c,c[IP]); c[IP]=r; } break;
 		case 0x02: c[IP]=readop(c); break;
-		case 0x03: rpush(c,c[IP]); c[IP]=readop(c); break;
+		case 0x03: { uint16_t r=readop(c); rpush(c,c[IP]); c[IP]=r; } break;
 		case 0x04: // we don't have slots so no unext, sorry
 		case 0x05: if(c[RP]) { c[IP]=readop(c); } else { readop(c); } break;
 		case 0x06: if(!tos(c)) { c[IP]=readop(c); } else { readop(c); } break;
@@ -61,14 +66,16 @@ void step(uint16_t *c) {
 		case 0x98: exit(0); break;
 		case 0x99: printf("0x%02x\n",tos(c)); break;
 
-		default: printf("unknown op %02x\n",op);
+		default:
+			printf("unknown op 0x%02x at 0x%x\n",op,c[IP]);
+			abort();
 		}
 }
 
-int main() {
+int main(int argc,char *argv[]) {
 	uint16_t code[1024];
 
-	FILE *f=fopen("test.vm","r");
+	FILE *f=fopen(argv[1],"r");
 	fread(code,1,sizeof(code),f);
 	fclose(f);
 
