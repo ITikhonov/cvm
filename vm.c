@@ -32,7 +32,7 @@ void step(uint16_t *c) {
 		case 0x02: c[IP]=readop(c); break;
 		case 0x03: { uint16_t r=readop(c); rpush(c,c[IP]); c[IP]=r; } break;
 		case 0x04: // we don't have slots so no unext, sorry
-		case 0x05: if(c[RP]) { c[IP]=readop(c); } else { readop(c); } break;
+		case 0x05: if(c[c[RP]]) { c[IP]=readop(c); c[c[RP]]--; } else { readop(c); rpop(c); } break;
 		case 0x06: if(!tos(c)) { c[IP]=readop(c); } else { readop(c); } break;
 		case 0x07: if(tos(c)>0) { c[IP]=readop(c); } else { readop(c); } break;
 
