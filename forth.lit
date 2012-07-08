@@ -1,0 +1,80 @@
+Opcodes from http://www.colorforth.com/inst.htm except no
+'unext' and '!p'. Opcode '+*' replaced with '*'.
+
+=opcodes
+-opcodes='; ex jump call unext next if -if @p @+ @b @ !p !+ !b ! * 2* 2/ - + and or drop dup pop over a . push b! a!'.split()
+-opcodes=dict(zip(opcodes,range(len(opcodes))))
+-opcodes['exit']=0x98
+-opcodes['print']=0x99
+
+Each non-empty line of input contains one definition. First word is a name
+of what will be defined, the rest is a definition.
+
+=input
+-from sys import argv
+-for l in open(argv[1]):
+-	l=l.strip()
+-	if not l: continue
+-	parseone(l)
+
+We put everythin into wordset represented by global dict ws.
+
+=parser
+-ws={}
+-def parseone(l):
+-	w=l.split()
+-	ws[w[0]]=w[1:]
+
+We join all definitions into one list noting where each starting.
+
+In each definition opcode words replaced with numbers. Numberic literals are replaced by @p instruction and number.
+
+In the end replace all names with offsets
+
+Also words starting with ':' are labels we don't compile them, but remember address. When encountered later
+we store offset.
+
+=compiler
+-def op(x):
+-	try: return [opcodes[x]]
+-	except KeyError:
+-		try: return [0x08,int(x,16)]
+-		except ValueError: return [0x03,x]
+
+-def compile():
+-	o={}
+-	c=[0,0x04,0x0c,0x00,0x00,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8]
+-	for w,d in ws.items():
+-		l={}
+-		o[w]=len(c)
+-		for x in d:
+-			if x.startswith(':'): l[x[1:]]=len(c)
+-			elif x in l: c.append(l[x])
+-			else: c.extend(op(x))
+-	c[0]=o['main']
+-	print o
+-	return [o.get(x,x) for x in c]
+
+
+Then we dump everything into file as 16-bit integers
+
+=store
+-from array import array
+
+-def store(l,n):
+-	u=[x for x in l if type(x) is not int]
+-	if u:
+-		print 'unresolved',u
+-		exit(1)
+-	array('H',l).tofile(open(n,'w'))
+
+=>f.py
+>opcodes
+>parser
+>compiler
+>input
+>store
+-store(compile(),argv[2])
+
+
+
