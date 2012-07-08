@@ -37,28 +37,42 @@ Also words starting with ':' are labels we don't compile them, but remember addr
 we store offset.
 
 =compiler
+-from struct import pack
+-def makeint(i):
+-	return [ord(x) for x in pack('I',i)]
 -def op(x):
 -	try: return [opcodes[x]]
 -	except KeyError:
--		try: return [0x08,int(x,16)]
--		except ValueError: return [0x03,x]
+-		try: return [0x08]+makeint(int(x,16))
+-		except ValueError: return [0x03,x,0,0,0]
 
 -def compile():
 -	o={}
--	c=[0,3,0xb,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,1,2,3,4,5,6,7,8]
+-	c=[0,0,0,0,
+-	   0x10,0,0,0,
+-	   0x30,0,0,0,
+-	   0,0,0,0,
+-	   0,0,0,0,
+-	   1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,
+-	   1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8]
 -	for w,d in ws.items():
 -		l={}
 -		o[w]=len(c)
 -		for x in d:
 -			if x.startswith(':'): l[x[1:]]=len(c)
--			elif x in l: c.append(l[x])
+-			elif x in l: c.extend(makeint(l[x]))
 -			else: c.extend(op(x))
 -		c.append(0x00)
 -	o['data']=len(c)
--	c.extend([0x08,len(c)+3,0x00])
+-	c.extend([0x08]+makeint(len(c)+6)+[0x00])
 -	c[0]=o['main']
 -	print o
--	return [o.get(x,x) for x in c]
+-	for i in range(len(c)):
+-		x=c[i]
+-		if type(x) is str:
+-			off=makeint(o[x])
+-			c[i:i+4]=off
+-	return c
 
 
 Then we dump everything into file as 16-bit integers
@@ -71,7 +85,7 @@ Then we dump everything into file as 16-bit integers
 -	if u:
 -		print 'unresolved',u
 -		exit(1)
--	array('H',l).tofile(open(n,'w'))
+-	array('B',l).tofile(open(n,'w'))
 
 =>f.py
 >opcodes
