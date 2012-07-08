@@ -7,19 +7,21 @@
 #define RP (2)
 #define A (3)
 #define B (4)
-#define END (5)
+#define END (8)
 
-static uint16_t tos(uint16_t *code) { return code[code[SP]]; }
-static uint16_t pop(uint16_t *code) { return code[code[SP]--]; }
-static void push(uint16_t *code, uint16_t v) { code[SP]++; code[code[SP]]=v; }
+static uint32_t tos(uint16_t *code) { uint32_t *c=(uint32_t*)code; return c[code[SP]]; }
+static uint32_t pop(uint16_t *code) { uint32_t *c=(uint32_t*)code; return c[code[SP]--]; }
+static void push(uint16_t *code, uint32_t v) { uint32_t *c=(uint32_t*)code; code[SP]++; c[code[SP]]=v; }
+static void over(uint16_t *code) { uint32_t *c=(uint32_t*)code; push(code,c[code[SP]-1]); }
 
-static uint16_t rpop(uint16_t *code) { return code[code[RP]--]; }
-static void rpush(uint16_t *code,uint16_t v) { code[RP]++; code[code[RP]]=v; }
+static uint32_t rpop(uint16_t *code) { uint32_t *c=(uint32_t*)code;  return c[code[RP]--]; }
+static void rpush(uint16_t *code,uint32_t v) { uint32_t *c=(uint32_t*)code; code[RP]++; c[code[RP]]=v; }
+static uint32_t *ptor(uint16_t *code) { uint32_t *c=(uint32_t*)code; return &c[code[RP]]; }
 
 static uint16_t readop(uint16_t *code) { return code[code[IP]++]; }
 
 void dump(uint16_t *c) {
-	printf("0x%04x: op 0x%02x sp 0x%02x\n",c[IP],c[c[IP]],c[SP]);
+	printf("0x%04x: op 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x)\n",c[IP],c[c[IP]],c[SP],tos(c),c[RP],*ptor(c));
 }
 
 uint16_t *step(uint16_t *c) {
@@ -32,7 +34,7 @@ uint16_t *step(uint16_t *c) {
 		case 0x02: c[IP]=readop(c); break;
 		case 0x03: { uint16_t r=readop(c); rpush(c,c[IP]); c[IP]=r; } break;
 		case 0x04: // we don't have slots so no unext, sorry
-		case 0x05: if(c[c[RP]]) { c[IP]=readop(c); c[c[RP]]--; } else { readop(c); rpop(c); } break;
+		case 0x05: if(*ptor(c)) { c[IP]=readop(c); (*ptor(c))--; } else { readop(c); rpop(c); } break;
 		case 0x06: if(!tos(c)) { c[IP]=readop(c); } else { readop(c); } break;
 		case 0x07: if(tos(c)>0) { c[IP]=readop(c); } else { readop(c); } break;
 
@@ -56,7 +58,7 @@ uint16_t *step(uint16_t *c) {
 		case 0x17: pop(c); break;
 		case 0x18: push(c,tos(c)); break;
 		case 0x19: push(c,rpop(c)); break;
-		case 0x1a: push(c,c[c[SP]-1]); break;
+		case 0x1a: over(c); break;
 		case 0x1b: push(c,c[A]); break;
 		case 0x1c: break;
 		case 0x1d: rpush(c,pop(c)); break;
@@ -83,6 +85,7 @@ int main(int argc,char *argv[]) {
 	fclose(f);
 
 	for(;;) {
+		if(argc>2) dump(code);
 		code=step(code);
 	}
 	return 0;
