@@ -52,6 +52,9 @@ we store offset.
 -			if x.startswith(':'): l[x[1:]]=len(c)
 -			elif x in l: c.append(l[x])
 -			else: c.extend(op(x))
+-		c.append(0x00)
+-	o['data']=len(c)
+-	c.extend([0x08,len(c)+3,0x00])
 -	c[0]=o['main']
 -	print o
 -	return [o.get(x,x) for x in c]
