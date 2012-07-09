@@ -38,8 +38,8 @@ uint8_t *step(uint8_t *c) {
 				s=i?(w+i):"[unknown]";
 			}
 			fprintf(stderr,"0x%04x ",*ip);
-			fprintf(stderr,"%-20s:\top 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x)\n",
-					s,c[*ip],*sp,tos(),*rp,*ptor());
+			fprintf(stderr,"%-20s:\top 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x) a 0x%x b 0x%x\n",
+					s,c[*ip],*sp,tos(),*rp,*ptor(),*a,*b);
 		}
 
 		////////////////////////////////////////////////////
