@@ -59,11 +59,11 @@ uint8_t *step(uint8_t *c) {
 		case 0x07: if(tos()>0) { *ip=readint(); } else { readint(); } break;
 
 		case 0x08: push(readint()); break;
-		case 0x09: push(*p((*a)++)); break;
+		case 0x09: push(*p(*a)); *a+=4; break;
 		case 0x0a: push(*p(*b)); break;
 		case 0x0b: push(*p(*a)); break;
 		case 0x0c: abort(); // port??? wtf is that
-		case 0x0d: *p((*a)++)=pop(c); break;
+		case 0x0d: *p(*a)=pop(c); *a+=4; break;
 		case 0x0e: *p(*b)=pop(c); break;
 		case 0x0f: *p(*a)=pop(c); break;
 
