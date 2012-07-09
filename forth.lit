@@ -63,9 +63,9 @@ we store offset.
 -			if x.startswith(':'): o[w+x]=len(c)
 -			elif x in l: c.extend([w+':'+x,None,None,None])
 -			else:
--				dbg[len(c)]='('+w+')'+x
+-				dbg[len(c)]=w+' '+x
 -				c.extend(op(x))
--		dbg[len(c)]='('+w+'/)'
+-		dbg[len(c)]=''+w+'/'
 -		c.append(0x00)
 -	o['data']=len(c)
 -	c.extend([0x08]+makeint(len(c)+6)+[0x00])
@@ -94,11 +94,11 @@ Then we dump everything into file as 16-bit integers
 =debug
 -def debug(d,n):
 -	m=max(d)
--	idx=array('I')
+-	idx=array('I',[m])
 -	ss=array('B')
 -	for i in range(m):
 -		if i in d:
--			idx.append(len(ss)+m*4)
+-			idx.append(len(ss)+m*4+4)
 -			ss.fromstring(d[i])
 -			ss.append(0)
 -		else: idx.append(0)

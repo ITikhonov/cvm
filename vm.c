@@ -30,12 +30,16 @@ uint8_t *step(uint8_t *c) {
 
 		void dump() {
 			uint32_t *idx=debug;
+			int m=*idx++;
 			char *w=debug;
-			int i=idx[*ip];
-			char *s=i?(w+i):"[unknown]";
-			fprintf(stderr,"0x%04x ",*ip);
-			fprintf(stderr,"%s:\top 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x)\n",
-				s,c[*ip],*sp,tos(),*rp,*ptor());
+			char *s="[outofrange]";
+			if(*ip<m) {
+				int i=idx[*ip];
+				s=i?(w+i):"[unknown]";
+				fprintf(stderr,"0x%04x ",*ip);
+				fprintf(stderr,"%-20s:\top 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x)\n",
+					s,c[*ip],*sp,tos(),*rp,*ptor());
+			}
 		}
 
 		////////////////////////////////////////////////////
