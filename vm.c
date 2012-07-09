@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int debug=0;
+void *debug=0;
 
 static uint32_t *p32(uint8_t *c,uint32_t i) { return (uint32_t*)&c[i]; };
 
@@ -29,8 +29,13 @@ uint8_t *step(uint8_t *c) {
 
 
 		void dump() {
-			printf("0x%04x: op 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x)\n",
-				*ip,c[*ip],*sp,tos(),*rp,*ptor());
+			uint32_t *idx=debug;
+			char *w=debug;
+			int i=idx[*ip];
+			char *s=i?(w+i):"[unknown]";
+			fprintf(stderr,"0x%04x ",*ip);
+			fprintf(stderr,"%s:\top 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x)\n",
+				s,c[*ip],*sp,tos(),*rp,*ptor());
 		}
 
 		////////////////////////////////////////////////////
@@ -90,12 +95,17 @@ uint8_t *step(uint8_t *c) {
 
 int main(int argc,char *argv[]) {
 	uint8_t *code=malloc(65536);
-
+	
 	FILE *f=fopen(argv[1],"r");
 	fread(code,1,65536,f);
 	fclose(f);
 
-	debug=argc>2;
+	if(argc>2) {
+		debug=malloc(65536);
+		FILE *f=fopen(argv[2],"r");
+		fread(debug,1,65536,f);
+		fclose(f);
+	}
 
 	for(;;) {
 		code=step(code);

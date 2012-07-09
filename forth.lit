@@ -47,6 +47,7 @@ we store offset.
 -		except ValueError: return [0x03,x,0,0,0]
 
 -def compile():
+-	dbg={}
 -	o={}
 -	c=[0,0,0,0,
 -	   0x10,0,0,0,
@@ -61,7 +62,10 @@ we store offset.
 -		for x in d:
 -			if x.startswith(':'): o[w+x]=len(c)
 -			elif x in l: c.extend([w+':'+x,None,None,None])
--			else: c.extend(op(x))
+-			else:
+-				dbg[len(c)]='('+w+')'+x
+-				c.extend(op(x))
+-		dbg[len(c)]='('+w+'/)'
 -		c.append(0x00)
 -	o['data']=len(c)
 -	c.extend([0x08]+makeint(len(c)+6)+[0x00])
@@ -72,7 +76,7 @@ we store offset.
 -		if type(x) is str:
 -			off=makeint(o[x])
 -			c[i:i+4]=off
--	return c
+-	return c,dbg
 
 
 Then we dump everything into file as 16-bit integers
@@ -87,13 +91,32 @@ Then we dump everything into file as 16-bit integers
 -		exit(1)
 -	array('B',l).tofile(open(n,'w'))
 
+=debug
+-def debug(d,n):
+-	m=max(d)
+-	idx=array('I')
+-	ss=array('B')
+-	for i in range(m):
+-		if i in d:
+-			idx.append(len(ss)+m*4)
+-			ss.fromstring(d[i])
+-			ss.append(0)
+-		else: idx.append(0)
+-	f=open(n,'w')
+-	idx.tofile(f)
+-	ss.tofile(f)
+-	f.close()
+
 =>f.py
 >opcodes
 >parser
 >compiler
 >input
 >store
--store(compile(),argv[2])
+>debug
+-l,d=compile()
+-store(l,argv[2])
+-debug(d,argv[3])
 
 
 
