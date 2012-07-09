@@ -70,7 +70,8 @@ we store offset.
 -				dbg[len(c)]=w+' '+x
 -				c.extend(op(x))
 -		dbg[len(c)]=''+w+'/'
--		c.append(0x00)
+-		if c[-5]==0x03: c[-5]=0x02
+-		else: c.append(0x00)
 -	o['data']=len(c)
 -	c.extend([0x08]+makeint(len(c)+6)+[0x00])
 -	c[0]=o['main']
