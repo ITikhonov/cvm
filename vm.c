@@ -36,10 +36,10 @@ uint8_t *step(uint8_t *c) {
 			if(*ip<m) {
 				int i=idx[*ip];
 				s=i?(w+i):"[unknown]";
-				fprintf(stderr,"0x%04x ",*ip);
-				fprintf(stderr,"%-20s:\top 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x)\n",
-					s,c[*ip],*sp,tos(),*rp,*ptor());
 			}
+			fprintf(stderr,"0x%04x ",*ip);
+			fprintf(stderr,"%-20s:\top 0x%02x sp 0x%02x(0x%x) rp 0x%02x(0x%x)\n",
+					s,c[*ip],*sp,tos(),*rp,*ptor());
 		}
 
 		////////////////////////////////////////////////////
