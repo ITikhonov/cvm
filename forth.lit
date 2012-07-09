@@ -6,6 +6,8 @@ Opcodes from http://www.colorforth.com/inst.htm except no
 -opcodes=dict(zip(opcodes,range(len(opcodes))))
 -opcodes['c!']=0x30
 -opcodes['c@']=0x31
+-opcodes['c!+']=0x32
+-opcodes['c@+']=0x33
 -opcodes['exit']=0x99
 -opcodes['char']=0x98
 -opcodes['print']=0x97
