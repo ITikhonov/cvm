@@ -74,7 +74,7 @@ we store offset.
 -		else: c.append(0x00)
 -	o['data']=len(c)
 -	c.extend([0x08]+makeint(len(c)+6)+[0x00])
--	c[0]=o['main']
+-	c[0:4]=makeint(o['main'])
 -	for i in range(len(c)):
 -		x=c[i]
 -		if type(x) is str:
