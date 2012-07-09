@@ -70,7 +70,6 @@ we store offset.
 -	o['data']=len(c)
 -	c.extend([0x08]+makeint(len(c)+6)+[0x00])
 -	c[0]=o['main']
--	print o
 -	for i in range(len(c)):
 -		x=c[i]
 -		if type(x) is str:
@@ -116,7 +115,6 @@ Then we dump everything into file as 16-bit integers
 >debug
 -l,d=compile()
 -store(l,argv[2])
--print d
 -debug(d,argv[3])
 
 
