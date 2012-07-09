@@ -56,11 +56,11 @@ we store offset.
 -	   1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,
 -	   1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8]
 -	for w,d in ws.items():
--		l={}
+-		l=dict.fromkeys([x[1:] for x in d if x.startswith(':')])
 -		o[w]=len(c)
 -		for x in d:
--			if x.startswith(':'): l[x[1:]]=len(c)
--			elif x in l: c.extend(makeint(l[x]))
+-			if x.startswith(':'): o[w+x]=len(c)
+-			elif x in l: c.extend([w+':'+x,None,None,None])
 -			else: c.extend(op(x))
 -		c.append(0x00)
 -	o['data']=len(c)
