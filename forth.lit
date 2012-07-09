@@ -4,6 +4,8 @@ Opcodes from http://www.colorforth.com/inst.htm except no
 =opcodes
 -opcodes='; ex jump call unext next if -if @p @+ @b @ !p !+ !b ! * 2* 2/ - + and or drop dup pop over a . push b! a!'.split()
 -opcodes=dict(zip(opcodes,range(len(opcodes))))
+-opcodes['c!']=0x30
+-opcodes['c@']=0x31
 -opcodes['exit']=0x99
 -opcodes['char']=0x98
 -opcodes['print']=0x97

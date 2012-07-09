@@ -85,6 +85,9 @@ uint8_t *step(uint8_t *c) {
 		case 0x1e: *b=pop(); break;
 		case 0x1f: *a=pop(); break;
 
+		case 0x30: c[*a]=pop(); break; // c!
+		case 0x31: push(c[*a]); break; // c@
+
 		case 0x96: c=realloc(c,pop()<<16); break;
 		case 0x97: printf("0x%02x ",tos()); break;
 		case 0x98: printf("%c\n",tos()); break;
