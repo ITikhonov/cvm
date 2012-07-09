@@ -94,7 +94,7 @@ Then we dump everything into file as 16-bit integers
 =debug
 -def debug(d,n):
 -	m=max(d)
--	idx=array('I',[m])
+-	idx=array('I',[m+1])
 -	ss=array('B')
 -	for i in range(m):
 -		if i in d:
