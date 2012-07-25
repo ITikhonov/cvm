@@ -65,9 +65,20 @@ we store offset.
 -	for w,d in ws.items():
 -		l=dict.fromkeys([x[1:] for x in d if x.startswith(':')])
 -		o[w]=len(c)
+-		data=False
 -		for i in range(len(d)):
 -			x=d.pop(0)
+
+-			if data:
+-				if x==']': data=False
+-				elif x.startswith('#'): c.append(int(ord(x[1])))
+-				elif x.startswith("'"): c.extend([x[1:],None,None,None])
+-				elif x.startswith("$"): c.extend(makeint(int(x[1:],16)))
+-				else: c.append(int(x,16))
+-				continue
+
 -			if x.startswith(':'): o[w+x]=len(c)
+-			elif x == '[': data=True
 -			elif x in l: c.extend([w+':'+x,None,None,None])
 -			else:
 -				dbg[len(c)]=w+' '+x
