@@ -56,7 +56,7 @@ uint8_t *step(uint8_t *c) {
 		case 0x04: // we don't have slots so no unext, sorry
 		case 0x05: if(*ptor()) { *ip=readint(); (*ptor())--; } else { readint(); rpop(); } break;
 		case 0x06: if(!tos()) { *ip=readint(); } else { readint(); } break;
-		case 0x07: if(tos()>0) { *ip=readint(); } else { readint(); } break;
+		case 0x07: if(tos()&0x80000000) { readint(); } else { *ip=readint(); } break;
 
 		case 0x08: push(readint()); break;
 		case 0x09: push(*p(*a)); *a+=4; break;
