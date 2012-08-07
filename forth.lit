@@ -40,6 +40,12 @@ In the end replace all names with offsets
 Also words starting with ':' are labels we don't compile them, but remember address. When encountered later
 we store offset.
 
+Special syntax is made for compiling literal values. Starting with [ and ending with ] everything will be threated
+as numbers and compiled as plain 8-bit integer without any bytecodes. When prepended with # code of first character
+after # will be compiled into single byte. When prepended with ' address of word will be compiled.
+
+Example: rawdata [ 0ff #x $0ffffffff 'rawdata ]
+
 =compiler
 -from struct import pack
 -def makeint(i):
@@ -96,7 +102,7 @@ we store offset.
 -	return c,dbg
 
 
-Then we dump everything into file as 16-bit integers
+Then we dump everything into file as 8-bit integers
 
 =store
 -from array import array
